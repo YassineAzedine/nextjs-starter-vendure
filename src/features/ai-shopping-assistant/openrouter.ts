@@ -10,6 +10,11 @@ export const OPENROUTER_TIMEOUT_MS = 20_000;
 /** Reasoning models spend completion tokens before answering, so leave room beyond the small JSON answer. */
 const MAX_COMPLETION_TOKENS = 2000;
 
+/** Whether an API key is configured. Reports presence only, never the value. */
+export function isOpenRouterConfigured(): boolean {
+    return Boolean(process.env.OPENROUTER_API_KEY);
+}
+
 export const requestOpenRouterCompletion: StructuredCompletionProvider = async ({messages, schemaName, schema}) => {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) return fail('not_configured', 'OPENROUTER_API_KEY is not set');

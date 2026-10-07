@@ -191,3 +191,26 @@ test('client modules cannot import the OpenRouter provider, directly or transiti
     }
     assert.deepEqual(violations, []);
 });
+
+test('storefront pages render the AI shopping assistant only through its opt-in section', async () => {
+    const assistantRoot = path.join(featuresRoot, 'ai-shopping-assistant');
+    const section = path.join(assistantRoot, 'shopping-assistant-section.tsx');
+    const ungated = path.join(assistantRoot, 'shopping-assistant.tsx');
+    const violations = [];
+
+    for (const file of await findSourceFiles(sourceRoot)) {
+        if (file.startsWith(`${assistantRoot}${path.sep}`)) continue;
+        const content = await readFile(file, 'utf8');
+        for (const specifier of runtimeImports(file, content)) {
+            const target = resolveImport(file, specifier);
+            if (target && [ungated, ungated.replace(/\.tsx$/, '')].includes(target)) {
+                violations.push(`${path.relative(root, file)} renders the assistant without its configuration check`);
+            }
+        }
+    }
+
+    const content = await readFile(section, 'utf8');
+    if (startsWithDirective(content, 'use client')) violations.push('the opt-in section must be a server component');
+    if (!/isShoppingAssistantEnabled\(\)/.test(content)) violations.push('the opt-in section must check isShoppingAssistantEnabled()');
+    assert.deepEqual(violations, []);
+});

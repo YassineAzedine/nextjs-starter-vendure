@@ -106,6 +106,16 @@ test('uses a free model by default and honours OPENROUTER_MODEL', async () => {
     assert.equal(JSON.parse(calls[0].init.body).model, 'vendor/other-model:free');
 });
 
+test('reports whether a key is configured without exposing it', () => {
+    assert.equal(openrouter.isOpenRouterConfigured(), true);
+
+    process.env.OPENROUTER_API_KEY = '';
+    assert.equal(openrouter.isOpenRouterConfigured(), false);
+
+    delete process.env.OPENROUTER_API_KEY;
+    assert.equal(openrouter.isOpenRouterConfigured(), false);
+});
+
 test('does not call OpenRouter without a key', async () => {
     delete process.env.OPENROUTER_API_KEY;
     const calls = respondWith(200, completion('{}'));

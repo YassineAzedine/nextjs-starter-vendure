@@ -7,7 +7,7 @@ import {
     type ShoppingAssistantResult,
 } from './assistant-flow';
 // The language model provider. Any StructuredCompletionProvider can replace it.
-import {requestOpenRouterCompletion} from './openrouter';
+import {isOpenRouterConfigured, requestOpenRouterCompletion} from './openrouter';
 
 export type {ShoppingAssistantOptions, ShoppingAssistantResult} from './assistant-flow';
 
@@ -17,6 +17,11 @@ const dependencies: ShoppingAssistantDependencies = {
         (await getTopCollections(languageCode)).map(collection => collection.slug),
     searchCatalog,
 };
+
+/** Whether the language model provider is configured, so the assistant can be offered to shoppers. */
+export function isShoppingAssistantEnabled(): boolean {
+    return isOpenRouterConfigured();
+}
 
 /**
  * Answer a natural-language shopping request with real Vendure products.
