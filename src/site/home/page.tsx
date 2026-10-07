@@ -3,6 +3,7 @@ import {Suspense} from "react";
 import {getRouteLocale} from "@/platform/i18n/server";
 import {HeroSection} from "@/site/home/hero-section";
 import {FeaturedProducts} from '@/features/products/featured-products';
+import {ShoppingAssistant} from '@/features/ai-shopping-assistant/shopping-assistant';
 import {SITE_NAME, SITE_URL, buildCanonicalUrl} from "@/config/metadata";
 import {BadgeCheck, Tag, Zap} from "lucide-react";
 import {getTranslations} from 'next-intl/server';
@@ -44,6 +45,7 @@ export default async function Home() {
     return (
         <div className="min-h-screen">
             <HeroSection/>
+            <ShoppingAssistant/>
             <Suspense>
                 <FeaturedProducts/>
             </Suspense>

@@ -118,6 +118,7 @@ test('builds candidates only from real Vendure data', () => {
         slug: 'laptop',
         description: 'Seventh-generation Intel Core processors.',
         imageUrl: 'https://cdn.test/laptop.jpg',
+        productAsset: {id: 'asset-1', preview: 'https://cdn.test/laptop.jpg'},
         priceWithTax: {min: 155880, max: 275880},
         currencyCode: 'USD',
         variants: laptop.variants.map(v => ({
@@ -198,6 +199,13 @@ test('does not treat a partial value as a match', () => {
     );
 
     assert.deepEqual(candidates, []);
+});
+
+test('keeps a missing Vendure asset as null', () => {
+    const {candidates} = filter.buildProductCandidates([{...tabletItem, productAsset: null}], [tablet], {});
+
+    assert.equal(candidates[0].productAsset, null);
+    assert.equal(candidates[0].imageUrl, null);
 });
 
 test('drops search results without Vendure details', () => {

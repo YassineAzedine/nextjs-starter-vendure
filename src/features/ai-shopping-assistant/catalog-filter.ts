@@ -37,9 +37,11 @@ export interface ProductCandidate {
     /** Plain-text excerpt of the Vendure description; empty when the product has none. */
     description: string;
     imageUrl: string | null;
+    /** The product asset exactly as Vendure search returned it, in the shape ProductCard expects. */
+    productAsset: SearchCandidate['productAsset'];
     /** Price range of the variants that satisfy the intent, in minor units including tax. */
     priceWithTax: { min: number; max: number };
-    currencyCode: string;
+    currencyCode: SearchCandidate['currencyCode'];
     /** Cheapest variants that satisfy the intent. */
     variants: ProductCandidateVariant[];
 }
@@ -121,6 +123,7 @@ export function buildProductCandidates(
             slug: item.slug,
             description: toPlainText(product.description, MAX_DESCRIPTION_LENGTH),
             imageUrl: item.productAsset?.preview ?? null,
+            productAsset: item.productAsset ?? null,
             priceWithTax: {min: variants[0].priceWithTax, max: variants[variants.length - 1].priceWithTax},
             currencyCode: item.currencyCode,
             variants: variants.slice(0, MAX_VARIANTS_PER_CANDIDATE).map(variant => ({
